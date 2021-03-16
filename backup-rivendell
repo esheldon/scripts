@@ -4,7 +4,7 @@
 # perform incremental backups using rsync.  See rsync-backup for details
 # of how the backup is performed.
 
-exclude_list=~/.dotfiles/backup_excludes/rivendell
+exclude_list=~/git/misc/backup_excludes/rivendell
 if [[ ! -e $exclude_list ]]; then
     echo "exclude list ${exclude_list} missing"
     exit 1
