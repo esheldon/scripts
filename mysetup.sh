@@ -1,35 +1,15 @@
-# Check out my git archive and put in place symlinks
-# Usage:
-#  bash mysetup.sh dotfiles  #  Just gets dotfiles
-#  bash mysetup.sh basic # currently everything except latex/fortran/www
-#  bash mysetup.sh all   # gets everything
-#
-# Note you'll have to link the xsession by hand, since it will depend on
-# the machine.  e.g. ln -s ~/.dotfiles/.dotfiles/X/xinitrc.xmonad .xsession
-# same for the xmonad.hs and xmobarrc
-#
+# Check out git repos and put in place symlinks
 
 if [[ `which git` == "" ]]; then
     echo "git is not installed"
     exit 1
 fi
 
-# Check out either all or just dotfiles
-if [ $# -eq 0 ]; then
-	echo "usage: mysetup.sh type1 type2 .. "
-	echo "  types:  misc shell_scripts"
-	exit 45
-fi
-
-type=$1
-
-
 cd ~
 mkdir -p git
 
-for type; do
-    if [[ $type == "misc" ]]; then
-        echo "cloning misc (dotfiles, etc)"
+for type in dotfiles misc shell_scripts; do
+    if [[ $type == "dotfiles" ]]; then
         pushd ~/git
 
         if [[ -e "$type" ]]; then
@@ -42,12 +22,9 @@ for type; do
         echo "  setting symlinks"
 
         rm -f .dotfiles
-        ln -vfs git/misc/dotfiles .dotfiles
 
-        rm -f help
-        ln -vfs git/misc/help
-        rm -f personal
-        ln -vfs git/misc/personal
+        rm -f .dotfiles
+        ln -vfs git/dotfiles .dotfiles
 
         ln -vfs .dotfiles/python/pythonrc .pythonrc
 
@@ -69,11 +46,6 @@ for type; do
         ln -vfs .dotfiles/git/gitconfig .gitconfig
         ln -vfs .dotfiles/conda/condarc .condarc
 
-        rm -f .fonts
-        ln -vfs .dotfiles/fonts .fonts
-        rm -f .icons
-        ln -vfs .dotfiles/icons .icons
-
         if [ ! -e .ssh ]; then
             mkdir .ssh
             chmod og-rx .ssh
@@ -91,6 +63,28 @@ for type; do
         mkdir -p .ipython/profile_default
         rm -f .ipython/profile_default/ipython_config.py
         ln -s ~/.dotfiles/ipython/ipython_config.py .ipython/profile_default/
+
+    elif [[ $type == "misc" ]]; then
+        pushd ~/git
+
+        if [[ -e "$type" ]]; then
+            echo "$type git directory already exists"
+            exit 45
+        fi
+        git clone git@github.com:esheldon/misc.git
+        popd
+
+        echo "  setting symlinks"
+
+
+        rm -f help
+        ln -vfs git/misc/help
+
+        rm -f personal
+        ln -vfs git/misc/personal
+
+        rm -f .fonts
+        ln -vfs .dotfiles/fonts .fonts
 
     elif [[ $type == "shell_scripts" ]]; then
         pushd ~/git
