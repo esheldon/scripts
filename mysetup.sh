@@ -41,8 +41,6 @@ for type; do
 
         echo "  setting symlinks"
 
-        rm -f perllib
-        ln -vfs git/misc/perllib
         rm -f .dotfiles
         ln -vfs git/misc/dotfiles .dotfiles
 
