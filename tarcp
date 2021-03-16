@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# tarcp indir outdir
+#
+# copy the input directory into the output directory, not over-writing existing
+# files if they are newer or the same age.
+#
+# Note reblocking is turned on automatically since we are reading from stdin
+#
+# the output directory is created if it does not exist.
+#
+
+# exit when any command fails
+set -e
+
+if [[ $# -lt 2 ]]; then
+    echo "tarcp indir outdir"
+    exit 1
+fi
+
+indir=$1
+outdir=$2
+
+if [[ ! -e $indir ]]; then
+    echo "input directory does not exist: $indir"
+    exit 1
+fi
+
+if [[ ! -e $outdir ]]; then
+    echo "making output directory: $outdir"
+    mkdir -p "$outdir"
+fi
+
+outdir_abs=$(readlink -m $outdir)
+
+cd "$indir"
+tar cf - . | (cd "$outdir_abs" && tar --keep-newer-files -xvpf -)

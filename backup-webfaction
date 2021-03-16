@@ -1,0 +1,12 @@
+#!/bin/bash
+# usage: backup-webfaction
+#
+# perform incremental backups using rsync.  See rsync-backup for details
+# of how the backup is performed.
+
+from_dir="esheldon.webfactional.com:webapps"
+
+backup_dir=/media/esheldon/camp/esheldon/webfaction-backups
+name=webfaction
+
+$HOME/shell_scripts/rsync-backup $from_dir $backup_dir $name

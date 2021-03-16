@@ -1,0 +1,15 @@
+#!/bin/bash
+# run a command on all the nodes in the cluster
+
+if [[ $# -lt 1 ]]; then
+    echo "astrodo command"
+    echo "make sure to do proper quoting"
+    exit 1
+fi
+
+command="$1"
+
+for machine in $(awk '{print $1}' ~astrodat/bnl_desc.txt); do
+    echo "running on $machine"
+    ssh "$machine" "$command"
+done
