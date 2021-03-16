@@ -17,7 +17,7 @@ fi
 # Check out either all or just dotfiles
 if [ $# -eq 0 ]; then
 	echo "usage: mysetup.sh type1 type2 .. "
-	echo "  types:  misc"
+	echo "  types:  misc shell_scripts"
 	exit 45
 fi
 
@@ -43,8 +43,6 @@ for type; do
 
         rm -f perllib
         ln -vfs git/misc/perllib
-        rm -f shell_scripts
-        ln -vfs git/misc/shell_scripts
         rm -f .dotfiles
         ln -vfs git/misc/dotfiles .dotfiles
 
@@ -95,6 +93,20 @@ for type; do
         mkdir -p .ipython/profile_default
         rm -f .ipython/profile_default/ipython_config.py
         ln -s ~/.dotfiles/ipython/ipython_config.py .ipython/profile_default/
+
+    elif [[ $type == "shell_scripts" ]]; then
+        pushd ~/git
+
+        if [[ -e "$type" ]]; then
+            echo "$type git directory already exists"
+            exit 45
+        fi
+        git clone git@github.com:esheldon/shell_scripts.git
+        popd
+
+        rm -f shell_scripts
+        ln -s git/shell_scripts
+
     else
         echo "unknown type: $type"
     fi
