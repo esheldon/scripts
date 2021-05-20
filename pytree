@@ -1,0 +1,28 @@
+#!/bin/bash
+
+function usage {
+    echo "Usage pytree [-t] [directory]"
+    echo "use -t to see tests"
+    exit 1
+}
+
+
+include_tests="n"
+
+while getopts "th" Option
+  do
+  case $Option in
+      h) usage ;;
+      t) include_tests="y" ;;
+      [?]) echo usage
+          exit 1;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+dir=$1
+if [[ $include_tests == "y" ]]; then
+    tree -I '*~|*pyc|*pycache*' $dir
+else
+    tree -I '*~|*pyc|*test*|*pycache*' $dir
+fi
