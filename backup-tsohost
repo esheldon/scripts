@@ -1,12 +1,18 @@
 #!/bin/bash
-# usage: backup-webfaction
+# usage: backup-tsohost
 #
 # perform incremental backups using rsync.  See rsync-backup for details
 # of how the backup is performed.
 
-from_dir="esheldon.webfactional.com:webapps"
+from_dir="$tsohost:/home/f36enrwgolmi"
 
-backup_dir=/media/esheldon/camp/esheldon/webfaction-backups
-name=webfaction
+bdisk=/mnt/data
+if [[ ! -e "$bdisk" ]]; then
+    echo "backup disk is missing: $bdisk"
+    exit 1
+fi
 
-$HOME/shell_scripts/rsync-backup $from_dir $backup_dir $name
+backup_dir=${bdisk}/esheldon/backups/tsohost
+name=tsohost
+
+rsync-backup $from_dir $backup_dir $name

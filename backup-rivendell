@@ -17,7 +17,7 @@ if [[ ! -e "$bdisk" ]]; then
     exit 1
 fi
 
-backup_dir=${bdisk}/esheldon/backups
+backup_dir=${bdisk}/esheldon/backups/rivendell
 name=rivendell
 
 rsync-backup -e $exclude_list $from_dir $backup_dir $name
