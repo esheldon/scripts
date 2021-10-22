@@ -22,7 +22,7 @@ shift $(($OPTIND - 1))
 
 dir=$1
 if [[ $include_tests == "y" ]]; then
-    tree -I '*~|*pyc|*pycache*' $dir
+    tree -I '*~|*pyc|*pycache*|*egg-info' $dir
 else
-    tree -I '*~|*pyc|*test*|*pycache*' $dir
+    tree -I '*~|*pyc|*test*|*pycache*|*egg-info' $dir
 fi
