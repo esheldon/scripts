@@ -8,7 +8,7 @@ fi
 cd ~
 mkdir -p git
 
-for type in dotfiles misc shell_scripts; do
+for type in dotfiles misc personal; do
     if [[ $type == "dotfiles" ]]; then
         pushd ~/git
 
@@ -80,24 +80,23 @@ for type in dotfiles misc shell_scripts; do
         rm -f help
         ln -vfs git/misc/help
 
-        rm -f personal
-        ln -vfs git/misc/personal
-
         rm -f .fonts
         ln -vfs .dotfiles/fonts .fonts
 
-    elif [[ $type == "shell_scripts" ]]; then
+    elif [[ $type == "personal" ]]; then
         pushd ~/git
 
         if [[ -e "$type" ]]; then
             echo "$type git directory already exists"
             exit 45
         fi
-        git clone git@github.com:esheldon/shell_scripts.git
+        git clone git@github.com:esheldon/personal.git
         popd
 
-        rm -f shell_scripts
-        ln -s git/shell_scripts
+        echo "  setting symlinks"
+
+        rm -f personal
+        ln -vfs git/personal
 
     else
         echo "unknown type: $type"
