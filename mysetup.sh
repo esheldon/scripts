@@ -16,7 +16,7 @@ for type in dotfiles misc shell_scripts; do
             echo "$type git directory already exists"
             exit 45
         fi
-        git clone git@github.com:esheldon/misc.git
+        git clone git@github.com:esheldon/dotfiles.git
         popd
 
         echo "  setting symlinks"
@@ -86,14 +86,14 @@ for type in dotfiles misc shell_scripts; do
         rm -f .fonts
         ln -vfs .dotfiles/fonts .fonts
 
-    elif [[ $type == "shell_scripts" ]]; then
+    elif [[ $type == "scripts" ]]; then
         pushd ~/git
 
         if [[ -e "$type" ]]; then
             echo "$type git directory already exists"
             exit 45
         fi
-        git clone git@github.com:esheldon/shell_scripts.git
+        git clone git@github.com:esheldon/scripts.git
         popd
 
         rm -f shell_scripts
