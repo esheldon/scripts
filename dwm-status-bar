@@ -68,34 +68,22 @@ print_datetime() {
     echo -ne "${datetime}"
 }
 
-# cpu (from: https://bbs.archlinux.org/viewtopic.php?pid=661641#p661641)
+print_load() {
+    load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
+    echo -ne "load: ${load}"
+}
 
 while true; do
-    # get new cpu idle and total usage
-    eval $(awk '/^cpu /{print "cpu_idle_now=" $5 "; cpu_total_now=" $2+$3+$4+$5 }' /proc/stat)
-    cpu_interval=$((cpu_total_now-${cpu_total_old:-0}))
-    # calculate cpu usage (%)
-    let cpu_used="100 * ($cpu_interval - ($cpu_idle_now-${cpu_idle_old:-0})) / $cpu_interval"
 
-    cpu_used=$(printf "%3d" "$cpu_used")
+    load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
+    text="$(print_load) | $(print_memory) | $(print_hddfree)"
 
-    # output vars
-    print_cpu_used() {
-        printf "%-1b" "CPU${cpu_used}%"
-    }
-
-    # Pipe to status bar, not indented due to printing extra spaces/tabs
-    text="$(print_cpu_used) | $(print_memory) | $(print_hddfree)"
     power=$(print_power)
     if [[ $power != "" ]]; then
         text="${text} | ${power}"
     fi
     text="${text} | $(print_datetime)"
     xsetroot -name "${text}"
-    # xsetroot -name "$(print_cpu_used) | $(print_memory) | $(print_hddfree) | $(print_power) | $(print_datetime) "
 
-    # reset old rates
-    cpu_idle_old=$cpu_idle_now
-    cpu_total_old=$cpu_total_now
     sleep 1
 done

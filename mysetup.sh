@@ -8,22 +8,23 @@ fi
 cd ~
 mkdir -p git
 
-for type in dotfiles misc shell_scripts; do
-    if [[ $type == "dotfiles" ]]; then
-        pushd ~/git
+for type in dotfiles misc personal; do
+    pushd ~/git
+    if [[ -e "$type" ]]; then
+        echo "$type git directory already exists"
+        exit 45
+    fi
 
-        if [[ -e "$type" ]]; then
-            echo "$type git directory already exists"
-            exit 45
-        fi
+    if [[ $type == "dotfiles" ]]; then
+
         git clone git@github.com:esheldon/dotfiles.git
+
         popd
 
         echo "  setting symlinks"
 
         rm -f .dotfiles
 
-        rm -f .dotfiles
         ln -vfs git/dotfiles .dotfiles
 
         ln -vfs .dotfiles/python/pythonrc .pythonrc
@@ -65,39 +66,29 @@ for type in dotfiles misc shell_scripts; do
         ln -s ~/.dotfiles/ipython/ipython_config.py .ipython/profile_default/
 
     elif [[ $type == "misc" ]]; then
-        pushd ~/git
-
-        if [[ -e "$type" ]]; then
-            echo "$type git directory already exists"
-            exit 45
-        fi
         git clone git@github.com:esheldon/misc.git
         popd
 
         echo "  setting symlinks"
 
-
         rm -f help
         ln -vfs git/misc/help
-
-        rm -f personal
-        ln -vfs git/misc/personal
 
         rm -f .fonts
         ln -vfs .dotfiles/fonts .fonts
 
     elif [[ $type == "scripts" ]]; then
-        pushd ~/git
-
-        if [[ -e "$type" ]]; then
-            echo "$type git directory already exists"
-            exit 45
-        fi
         git clone git@github.com:esheldon/scripts.git
         popd
+        rm -f scripts
+        ln -s git/scripts
 
-        rm -f shell_scripts
-        ln -s git/shell_scripts
+    elif [[ $type == "personal" ]]; then
+        git clone git@github.com:esheldon/personal.git
+        popd
+
+        rm -f personal
+        ln -vfs git/personal
 
     else
         echo "unknown type: $type"
