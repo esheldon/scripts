@@ -8,7 +8,7 @@ fi
 cd ~
 mkdir -p git
 
-for type in dotfiles misc personal; do
+for type in dotfiles misc scripts personal; do
     pushd ~/git
     if [[ -e "$type" ]]; then
         echo "$type git directory already exists"
