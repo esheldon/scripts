@@ -8,18 +8,7 @@ print_memory() {
     echo -ne "mem ${left}"
 }
 
-print_power2() {
-    status="$(cat /sys/class/power_supply/AC/online)"
-    battery="$(cat /sys/class/power_supply/BAT0/capacity)"
-    timer="$(acpi -b | grep "Battery" | awk '{print $5}' | cut -c 1-5)"
-    if [ "${status}" == 1 ]; then
-        echo -ne "AC ON  ${battery}%"
-    else
-        echo -ne "AC OFF ${battery}%"
-    fi
-}
-
-print_power3() {
+print_power_old() {
 	capacity=$(cat /sys/class/power_supply/BAT0/capacity 2> /dev/null) || exit
 	status=$(cat /sys/class/power_supply/BAT0/status)
 
@@ -50,7 +39,7 @@ print_power() {
 
 	[ "$status" = "Charging" ] && color="#ffffff"
 
-	printf "%s %s %s" "$(echo "$capacity" | sed -e 's/$/%/')" "$(echo "$status" | sed -e "s/,//;s/Discharging/↓/;s/Not charging/X/;s/Charging/↑/;s/Unknown/?/;s/Full/O/;s/ 0*/ /g;s/ :/ /g")" "$tm"
+	printf "%s %s %s" "$(echo "$capacity" | sed -e 's/$/%/')" "$(echo "$status" | sed -e "s/,//;s/Discharging/↓/;s/Not charging/X/;s/Charging/↑/;s/Unknown/?/;s/Full/⚫/;s/ 0*/ /g;s/ :/ /g")" "$tm"
 
 }
 
