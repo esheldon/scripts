@@ -68,9 +68,8 @@ print_datetime() {
 }
 
 print_load() {
-    # load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
-    load=$(uptime | awk '{print $8,$9,$10}' | awk -F ', ' '{print $1,$2,$3}')
-    echo -ne "load ${load}"
+    load=$(uptime | awk -F ',' '{print $3""$4""$5}'| sed 's/  load average:/load/')
+    echo -ne "${load}"
 }
 
 while true; do
