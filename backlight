@@ -1,0 +1,44 @@
+#!/usr/bin/bash
+# you might need to add yourself to video group
+
+calc(){ awk "BEGIN { print "$*" }"; }
+
+min_rel_bright=5
+max_rel_bright=100
+
+min_abs_bright=1
+max_abs_bright=$(cat /sys/class/backlight/amdgpu_bl0/max_brightness)
+
+if [ $# -lt 1 ]
+then
+    echo "Usage: backlight brightness"
+    echo "    bright ness should be within [$min_rel_bright, $max_rel_bright]"
+    exit 1
+fi
+
+rel_bright=$1
+
+if [[ $rel_bright -lt $min_rel_bright ]]; then
+    echo "requested brightness $rel_bright < $min_rel_bright"
+    exit 1
+fi
+
+if [[ $rel_bright -gt $max_rel_bright ]]; then
+    echo "requested brightness $rel_bright > $max_rel_bright"
+    exit 1
+fi
+
+bright=$(calc $rel_bright*$max_abs_bright/100)
+
+# truncate to integer
+bright="${bright%.*}"
+
+# clip value
+if [ $bright -lt $min_abs_bright ]; then
+    bright=$min_abs_bright
+fi
+if [ $bright -gt $max_abs_bright ]; then
+    bright=$max_abs_bright
+fi
+
+echo "$bright" | sudo tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
