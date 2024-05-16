@@ -41,4 +41,5 @@ if [ $bright -gt $max_abs_bright ]; then
     bright=$max_abs_bright
 fi
 
-echo "$bright" | sudo tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
+# echo "$bright" | sudo tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
+echo "$bright" | tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
