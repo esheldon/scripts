@@ -1,10 +1,11 @@
 #!/bin/bash
 
 print_memory() {
-    # usage=$(free -h | awk '/^Mem:/ {print $3 "/" $2}')
-    left=$(free -h | awk '/^Mem:/ {print $7}')
-    perc=$(free | awk '/^Mem:/ {printf "%.0f", $7/$2*100}')
-    echo -ne "mem ${left} ${perc}%"
+    # left=$(free -h | awk '/^Mem:/ {print $7}')
+    # perc=$(free | awk '/^Mem:/ {printf "%.0f", $7/$2*100}')
+    # echo -ne "mem ${left} ${perc}%"
+    left=$(free -h | awk '/^Mem:/ {print $7"/"$2}')
+    echo -ne "mem ${left}"
 }
 
 print_power2() {
@@ -18,7 +19,7 @@ print_power2() {
     fi
 }
 
-print_power() {
+print_power3() {
 	capacity=$(cat /sys/class/power_supply/BAT0/capacity 2> /dev/null) || exit
 	status=$(cat /sys/class/power_supply/BAT0/status)
 
@@ -41,6 +42,18 @@ print_power() {
 	printf "%s%s%s" "$(echo "$status" | sed -e "s/,//;s/Discharging/🔋/;s/Not charging/🛑/;s/Charging/🔌/;s/Unknown/♻️/;s/Full/⚡/;s/ 0*/ /g;s/ :/ /g")" "$warn" "$(echo "$capacity" | sed -e 's/$/%/')"
 
 }
+print_power() {
+	capacity=$(cat /sys/class/power_supply/BAT0/capacity 2> /dev/null) || exit
+	status=$(cat /sys/class/power_supply/BAT0/status)
+
+    tm=$(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | egrep "time" | cut -d : -f 2 | xargs)
+
+	[ "$status" = "Charging" ] && color="#ffffff"
+
+	printf "%s %s %s" "$(echo "$capacity" | sed -e 's/$/%/')" "$(echo "$status" | sed -e "s/,//;s/Discharging/↓/;s/Not charging/X/;s/Charging/↑/;s/Unknown/?/;s/Full/O/;s/ 0*/ /g;s/ :/ /g")" "$tm"
+
+}
+
 print_wifiqual() {
     wifiessid="$(/sbin/iwconfig 2>/dev/null | grep ESSID | cut -d: -f2)"
     wifiawk="$(echo $wifiessid | awk -F',' '{gsub(/"/, "", $1); print $1}')"
@@ -50,16 +63,13 @@ print_wifiqual() {
 
 print_hddfree() {
 
-    dft=$(df -Ph | awk '/nvme0n1p2/ {print $4,$5}')
+    dft=$(df -Ph | awk '/nvme0n1p2/ {print $4"/"$2}')
     if [[ $dft == "" ]]; then
-        # dft=$(df -Ph | awk '/sda1/ {print $4,$5}')
-        dft=$(df -Ph | awk '/sda1/ {print $4,$5}')
+        dft=$(df -Ph | awk '/sda1/ {print $4"/"$2}')
         if [[ $dft == "" ]]; then
-            dft=$(df -Ph | awk '/sdb1/ {print $4,$5}')
+            dft=$(df -Ph | awk '/sdb1/ {print $4"/"$2}')
         fi
     fi
-    # hddfree="$(df -Ph /dev/nvme0n1p2 | awk '$3 ~ /[0-9]+/ {print $4}')"
-    # echo -ne "disk ${hddfree}"
     echo -ne "hdd $dft"
 }
 
@@ -69,18 +79,20 @@ print_datetime() {
 }
 
 print_load() {
-    load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
-    echo -ne "load: ${load}"
+    # load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
+    load=$(uptime | awk '{print $8,$9,$10}' | awk -F ', ' '{print $1,$2,$3}')
+    echo -ne "load ${load}"
 }
 
 while true; do
 
-    load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
+    # load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
     text="$(print_load) | $(print_memory) | $(print_hddfree)"
+    # text="$(print_memory) | $(print_hddfree)"
 
     power=$(print_power)
     if [[ $power != "" ]]; then
-        text="${text} | ${power}"
+        text="${text} | bat ${power}"
     fi
     text="${text} | $(print_datetime)"
     xsetroot -name "${text}"
