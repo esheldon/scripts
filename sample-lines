@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ $# -lt 1 ]]; then
-    echo "usage: rsample fraction
+    echo "usage: sample-lines fraction
 
 Choose a random sample of lines from the input.  The argument is the
 approximate fraction of lines to emit.  So to get approximately 100 lines from
