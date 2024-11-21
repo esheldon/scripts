@@ -63,7 +63,7 @@ print_hddfree() {
 }
 
 print_datetime() {
-    datetime="$(date "+%a %d %b %I:%M")"
+    datetime="$(date "+%D %I:%M")"
     echo -ne "${datetime}"
 }
 
