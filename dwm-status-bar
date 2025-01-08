@@ -74,15 +74,22 @@ print_datetime() {
 
 while true; do
 
-    # load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
-    text="$(print_memory) | $(print_hddfree)"
     # text="$(print_memory) | $(print_hddfree)"
+    text="$(print_memory)"
 
     power=$(print_power)
     if [[ $power != "" ]]; then
-        text="${text} | bat ${power}"
+        if [[ $text != "" ]]; then
+            text="${text} | bat ${power}"
+        else
+            text="bat ${power}"
+        fi
     fi
-    text="${text} | $(print_datetime)"
+    if [[ $text != "" ]]; then
+        text="${text} | $(print_datetime)"
+    else
+        text="$(print_datetime)"
+    fi
     xsetroot -name "${text}"
 
     sleep 1
