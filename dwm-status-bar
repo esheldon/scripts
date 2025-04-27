@@ -63,7 +63,7 @@ print_hddfree() {
 }
 
 print_datetime() {
-    datetime="$(date "+%D %I:%M")"
+    datetime="$(date "+%m/%d %I:%M")"
     echo -ne "${datetime}"
 }
 
@@ -75,8 +75,8 @@ print_datetime() {
 while true; do
 
     # load=$(uptime | awk '{print $10,$11,$12}' | awk -F ', ' '{print $1, $2, $3}')
-    text="$(print_memory) | $(print_hddfree)"
     # text="$(print_memory) | $(print_hddfree)"
+    text="$(print_memory)"
 
     power=$(print_power)
     if [[ $power != "" ]]; then

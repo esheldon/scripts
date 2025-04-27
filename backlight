@@ -7,7 +7,7 @@ min_rel_bright=5
 max_rel_bright=100
 
 min_abs_bright=1
-max_abs_bright=$(cat /sys/class/backlight/amdgpu_bl0/max_brightness)
+max_abs_bright=$(cat /sys/class/backlight/amdgpu_bl1/max_brightness)
 
 if [ $# -lt 1 ]
 then
@@ -42,4 +42,5 @@ if [ $bright -gt $max_abs_bright ]; then
 fi
 
 # echo "$bright" | sudo tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
-echo "$bright" | tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
+# echo "$bright" | tee /sys/class/backlight/amdgpu_bl0/brightness > /dev/null
+echo "$bright" | tee /sys/class/backlight/amdgpu_bl1/brightness > /dev/null
